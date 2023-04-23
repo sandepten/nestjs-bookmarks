@@ -5,6 +5,10 @@
   "description": "Nest TypeScript starter repository",
   "license": "MIT",
   "scripts": {
+    "db:dev:rm": "docker compose rm dev-nest-db -s -f -v",
+    "db:dev:up": "docker compose up -d dev-nest-db",
+    "db:dev:restart": "pnpm run db:dev:rm && pnpm run db:dev:up && sleep 1 && pnpm run prisma:dev:deploy",
+    "prisma:dev:deploy": "prisma migrate deploy",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -22,6 +26,7 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.5",
     "@nestjs/platform-express": "^9.0.0",
+    "argon2": "^0.30.3",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
     "reflect-metadata": "^0.1.13",
