@@ -1,10 +1,16 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SignInInput, SignUpInput } from './dto';
 @Injectable({})
 export class AuthService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private jwt: JwtService,
+    private config: ConfigService,
+  ) {}
   async signUp(data: SignUpInput) {
     // check if the user already exists
     const userExists = await this.prisma.user.findUnique({
@@ -30,7 +36,7 @@ export class AuthService {
       },
     });
     // return the saved user
-    return user;
+    return { token: await this.signToken(user.id, user.email) };
   }
 
   async signIn(data: SignInInput) {
@@ -47,12 +53,16 @@ export class AuthService {
     // if the password is not valid
     if (!valid) throw new ForbiddenException('Invalid email or password');
     // return the user
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
-    };
+    return { token: await this.signToken(user.id, user.email) };
+  }
+
+  signToken(userId: number, email: string) {
+    // generate the JWT token
+    const token = this.jwt.signAsync(
+      { sub: userId, email },
+      { expiresIn: '1d', secret: this.config.get('JWT_SECRET') },
+    );
+    // return the token
+    return token;
   }
 }
