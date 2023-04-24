@@ -48,7 +48,6 @@ export class AuthService {
     if (!valid) throw new ForbiddenException('Invalid email or password');
     // return the user
     return {
-      success: true,
       user: {
         id: user.id,
         email: user.email,
