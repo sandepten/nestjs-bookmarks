@@ -2,7 +2,7 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { SignInInput, SignUpInput } from './dto';
 @Injectable({})
 export class AuthService {
@@ -11,6 +11,7 @@ export class AuthService {
     private jwt: JwtService,
     private config: ConfigService,
   ) {}
+
   async signUp(data: SignUpInput) {
     // check if the user already exists
     const userExists = await this.prisma.user.findUnique({

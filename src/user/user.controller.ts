@@ -1,6 +1,6 @@
 import { Controller, Get, Put, UseGuards } from '@nestjs/common';
-import { GetUser } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { GetUser } from '../auth/decorator';
+import { JwtGuard } from '../auth/guard';
 import { UserService } from './user.service';
 
 // we can also move the @UseGuards(JwtGuard) to the single route level
